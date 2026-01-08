@@ -26,7 +26,6 @@ export async function logIn(
             return { user : null , session : null , error };
         }
 
-        console.log("✅ ログイン成功:", data);
         return { user : data.user , session : data.session , error : null };
     }catch (error){
         console.error("❌ ログイン中に予期しないエラーが発生しました:", error);
@@ -49,7 +48,11 @@ export async function signUp(
             email: data.email,
             password: data.password,
             options: {
-                data: data.metadata
+                data: {
+                    username: data.username,
+                    firstname: data.firstname,
+                    lastname: data.lastname,
+                }
             }
         })
 
@@ -63,7 +66,6 @@ export async function signUp(
             return { user : null , session : null , error };
         }
 
-        console.log("✅ サインアップ成功:", signUpData);
         return { user : signUpData.user , session : signUpData.session , error : null };
 
     }catch (error){
@@ -89,7 +91,6 @@ export async function logOut(){
             return { error };
         }
 
-        console.log("✅ ログアウト成功");
         return { error : null };
     }catch (error){
         console.error("❌ ログアウト中に予期しないエラーが発生しました:", error);
@@ -112,7 +113,6 @@ export function getCurrentUser(){
  */
 export async function isLoggedIn(): Promise<boolean> {
     const { data } = await supabase.auth.getSession();
-    console.log("現在のセッション情報:", data.session !== null);
     return data.session !== null;
 }
 

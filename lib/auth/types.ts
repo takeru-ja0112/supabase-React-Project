@@ -12,5 +12,7 @@ export interface LoginCredentials {
 }
 
 export interface SignupData extends LoginCredentials {
-  metadata?: Record<string, any>
+  username: string
+  firstname?: string
+  lastname?: string
 }

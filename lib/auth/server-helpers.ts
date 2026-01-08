@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase/server/supabaseServer";
  */
 export async function isLoggedIn(): Promise<boolean> {
     const supabase = await createClient();
-    console.log("現在のセッション情報:", supabase);
     const { data } = await supabase.auth.getSession();
     return data.session !== null;
 }

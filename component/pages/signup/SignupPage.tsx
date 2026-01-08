@@ -1,45 +1,42 @@
 "use client";
 
-import { motion } from "motion/react"
-import { useState } from "react"
-import { logIn } from "@/lib/auth/helpers";
-import { useRouter } from "next/navigation";
-import BackScreen from "@/component/templates/BackScreen";
 import TitleArea from "@/component/organisms/TitleArea";
-import Header from "@/component/organisms/Header";
+import BackScreen from "@/component/templates/BackScreen";
+import { motion } from "motion/react"
+import { signUp } from "@/lib/auth/helpers";
+import { useState } from "react";
+import type { SignupData } from "@/lib/auth/types";
+import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
-    const [error, setError] = useState<string | null>(null);
-    const [formData, setFormData] = useState({
+export default function SignupPage() {
+    const [ formData , setFormData ] = useState<{ email: string; username: string; password: string }>({
         email: "",
+        username: "",
         password: "",
     });
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
+        // サインアップ処理をここに実装
 
-        if (!formData.email || !formData.password) {
-            setError('メールアドレスとパスワードを入力してください');
-            return;
-        }
-
-        const { user, error: authError } = await logIn({
+        const { user , session , error } = await signUp({
             email: formData.email,
             password: formData.password,
+            username: formData.email.split('@')[0],
         });
 
-        if (authError) {
-            setError("メールアドレスまたはパスワードが正しくありません");
+        if(error){
+            console.error("サインアップエラー:", error);
             return;
         }
 
+        console.log("サインアップ成功:", user, session);
         router.push('/dashboard');
     }
 
     const changeFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { id, value } = e.target;
+        const { id , value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [id]: value,
@@ -47,11 +44,10 @@ export default function LoginPage() {
     }
 
     return (
-        <>
-            <BackScreen>
-                <TitleArea title="ログインページ" />
-
-                <motion.div
+        <BackScreen>
+            <TitleArea title="サインアップ" />
+            
+            <motion.div
                     className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8"
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -76,9 +72,29 @@ export default function LoginPage() {
                                     onChange={changeFormData}
                                     required
                                     aria-required="true"
-                                    aria-invalid={error ? "true" : "false"}
-                                    aria-describedby={error ? "login-error" : undefined}
                                     autoComplete="email"
+                                />
+                            </div>
+                        </motion.div >
+                        <motion.div
+                            initial={{ scale: 1 }}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            <div>
+                                <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    ユーザーネーム
+                                </label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    value={formData.username}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    placeholder="ユーザーネームを入力"
+                                    onChange={changeFormData}
+                                    required
+                                    aria-required="true"
+                                    autoComplete="username"
                                 />
                             </div>
                         </motion.div >
@@ -100,22 +116,10 @@ export default function LoginPage() {
                                     onChange={changeFormData}
                                     required
                                     aria-required="true"
-                                    aria-invalid={error ? "true" : "false"}
-                                    aria-describedby={error ? "login-error" : undefined}
                                     autoComplete="current-password"
                                 />
                             </div>
                         </motion.div >
-                        {error && (
-                            <div 
-                                id="login-error"
-                                className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg" 
-                                role="alert"
-                                aria-live="polite"
-                            >
-                                {error}
-                            </div>
-                        )}
                         <motion.div
                             initial={{ scale: 1 }}
                             whileHover={{ scale: 1.05 }}
@@ -124,31 +128,13 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition"
-                                aria-label="ログインフォームを送信"
+                                aria-label="サインアップフォームを送信"
                             >
-                                ログイン
+                                サインアップ
                             </button>
                         </motion.div>
                     </form>
-                    {/* サインアップページ */}
-                    <motion.div
-                        className="mt-6 text-center"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.8 }}
-                    >
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                            アカウントをお持ちでないですか？{' '}
-                            <a
-                                href="/signup"
-                                className="text-indigo-600 hover:text-indigo-800 font-medium"
-                            >
-                                サインアップ
-                            </a>
-                        </p>
-                    </motion.div>
                 </motion.div>
-            </BackScreen>
-        </>
-    )
+        </BackScreen>
+    );
 }
