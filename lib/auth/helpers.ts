@@ -17,7 +17,7 @@ export async function logIn(
         })
 
         if(error){
-            console.error('❌ ログインエラー詳細:', {
+            console.error('ログインエラー詳細:', {
                 message: error.message,
                 status: error.status,
                 code: error.code,
@@ -28,7 +28,7 @@ export async function logIn(
 
         return { user : data.user , session : data.session , error : null };
     }catch (error){
-        console.error("❌ ログイン中に予期しないエラーが発生しました:", error);
+        console.error("ログイン中に予期しないエラーが発生しました:", error);
         return { user : null , session : null , error : error as any};
     }
 }
@@ -50,14 +50,12 @@ export async function signUp(
             options: {
                 data: {
                     username: data.username,
-                    firstname: data.firstname,
-                    lastname: data.lastname,
                 }
             }
         })
 
         if(error){
-            console.error('❌ サインアップエラー詳細:', {
+            console.error('サインアップエラー詳細:', {
                 message: error.message,
                 status: error.status,
                 code: error.code,
@@ -69,7 +67,7 @@ export async function signUp(
         return { user : signUpData.user , session : signUpData.session , error : null };
 
     }catch (error){
-        console.error("❌ サインアップ中に予期しないエラーが発生しました:", error);
+        console.error("サインアップ中に予期しないエラーが発生しました:", error);
         return { user : null , session : null , error : error as any};
     }       
 }
@@ -82,7 +80,7 @@ export async function logOut(){
         const { error } = await supabase.auth.signOut();
 
         if(error){
-            console.error('❌ ログアウトエラー詳細:', {
+            console.error('ログアウトエラー詳細:', {
                 message: error.message,
                 status: error.status,
                 code: error.code,
@@ -93,7 +91,7 @@ export async function logOut(){
 
         return { error : null };
     }catch (error){
-        console.error("❌ ログアウト中に予期しないエラーが発生しました:", error);
+        console.error("ログアウト中に予期しないエラーが発生しました:", error);
         return { error : error as any};
     }
 }

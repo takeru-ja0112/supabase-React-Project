@@ -13,6 +13,4 @@ export interface LoginCredentials {
 
 export interface SignupData extends LoginCredentials {
   username: string
-  firstname?: string
-  lastname?: string
 }
